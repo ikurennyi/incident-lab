@@ -125,6 +125,16 @@ describe("running application", () => {
     expect(count.count).toBe(1);
   });
 
+  test("creates an order at full price when no coupon is provided", async () => {
+    const response = await fetch(`${base}/api/orders`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ items: [{ productId: 1, quantity: 1 }] }),
+    });
+    expect(response.status).toBe(201);
+    expect(await response.json()).toMatchObject({ total: 240000 });
+  });
+
   test("does not leak a previous request scope into the next exception", async () => {
     const response = await fetch(`${base}/__test__/error`, {
       headers: { "x-run-id": "second-run" },
